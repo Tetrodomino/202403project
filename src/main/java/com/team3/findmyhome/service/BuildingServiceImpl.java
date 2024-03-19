@@ -22,4 +22,36 @@ public class BuildingServiceImpl implements BuildingService{
 		query = "%" + query + "%";
 		return bDao.getBuildingList(field, query);
 	}
+
+	@Override
+	public void updateBuildingLatLon(Building building) {
+		bDao.updateBuidingLatLon(building);
+	}
+
+	@Override
+	public void deleteBuilding(int bid) {
+		bDao.deleteBuilding(bid);
+	}
+
+	@Override
+	public float getAvgLat(String field, String query) {
+		query = "%" + query + "%";
+		return bDao.getAvgLat(field, query);
+	}
+
+	@Override
+	public float getAvgLon(String field, String query) {
+		query = "%" + query + "%";
+		return bDao.getAvgLon(field, query);
+	}
+
+	@Override
+	public float getLatBid(int bid) {
+		return bDao.getLatBid(bid);
+	}
+
+	@Override
+	public float getLonBid(int bid) {
+		return bDao.getLonBid(bid);
+	}
 }

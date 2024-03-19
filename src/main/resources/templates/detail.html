@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <header th:replace="~{fragments/base :: head}"></header>
+    <meta charset="utf-8">
+    <title>여러개 마커에 이벤트 등록하기1</title>
+    <script>
+        function search() {
+            const field = $('#field').val();
+            const query = $('#query').val();
+            const uri = '/fmh/building/search?f=' + field + '&q=' + query;
+            location.href = encodeURI(uri);
+        };   
+    </script>
+    <script th:inline="javascript">
+        function dealshow() {
+            var fe = ([[${field}]] == null) ? null : [[${field}]];
+            var qu = ([[${query}]] == null) ? null : [[${query}]];
+
+            var uri = '/fmh/building/detail/deal/' + [[${building.bid}]];
+            if (fe != null)
+                uri = uri + '/' + fe;
+
+            if (qu != null)
+                uri = uri + '/' + qu;
+
+            location.href = encodeURI(uri);
+        };
+    </script>
+    <!--<script src="/fmh/js/aside.js?v=3"></script>-->
+</head>
+<body>
+    <div class="row">
+        <div class="col-4">
+            <span style="width: 20%;">
+                <select class="form-control" id="field">
+                    <option value="bname" ${field eq 'bname' ? 'selected' : ''}>이름</option>
+                    <option value="addressroad" ${field eq 'addressroad' ? 'selected' : ''}>도로명주소</option>
+                </select>
+            </span>
+            <span style="width: 70%;" th:unless="${query}">
+                <input class="form-control" type="text" id="query" placeholder="검색할 내용">
+            </span>
+            <span style="width: 70%;" th:if="${query}">
+                <input class="form-control" type="text" id="query" th:value="${query}">
+            </span>
+            <span style="width: 10%;">
+                <button class="btn btn-outline-primary" onclick="search()">검색</button>
+            </span>
+            <div>
+                <table>
+                    <tr>
+                        <td>이름</td>
+                        <td>[[${building.bname}]]</td>
+                    </tr>
+                    <tr>
+                        <td>지역</td>
+                        <td>[[${building.location}]]</td>
+                    </tr>
+                    <tr>
+                        <td>유형</td>
+                        <td>[[${building.btype}]]</td>
+                    </tr>
+                    <tr>
+                        <td>지번주소</td>
+                        <td>[[${building.address}]]</td>
+                    </tr>
+                    <tr>
+                        <td>도로명주소</td>
+                        <td>[[${building.addressroad}]]</td>
+                    </tr>
+                    <tr>
+                        <td>우편번호</td>
+                        <td>[[${building.number}]]</td>
+                    </tr>
+                    <tr>
+                        <td>승인날짜</td>
+                        <td>[[${building.approve}]]</td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                거래내역 보기
+                <br>
+                <span th:each="area: ${areaList}">
+                    <button class="btn btn-outline-primary" th:onclick="|location.href='@{|/building/deal/${building.bid}/${area}|}'|">[[${area}]]m2 거래내역</button>
+                </span>
+            </div>
+    
+            <!-- 댓글 관련 -->
+            <!-- ${commentList}, ${replyList} -->
+        </div>
+
+        <div class="col-8">
+           <aside th:replace="~{fragments/base :: aside2(bL=${buildingList}, build=${building}, La=${lat}, Lo=${lon}, f=${field}, q=${query})}"></aside> 
+        </div>
+    </div>
+</body>
+</html>

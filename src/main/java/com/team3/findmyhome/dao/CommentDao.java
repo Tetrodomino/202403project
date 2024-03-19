@@ -13,21 +13,21 @@ import com.team3.findmyhome.entity.Comment;
 @Mapper
 public interface CommentDao {
 
-	@Select("select * from comments where cid=#{cid}")
+	@Select("select * from comment where cid=#{cid}")
 	Comment getComment(int cid);
 
-	@Select("select b.*, u.uname from comments b"
-			+ " join users u on b.uid=u.uid"
-			+ " where b.bid=#{bid} and content like b.#{query}"
+	@Select("select b.*, u.uname from comment b"
+			+ " join user u on b.uid=u.uid"
+			+ " where b.bid=#{bid} and b.content like #{query}"
 			+ " order by b.regDateTime desc")
 	List<Comment> getCommentList(int did, String query);
 	
-	@Insert("insert into comments values (default, #{bid}, #{uid}, #{content}, #{file}, default")
+	@Insert("insert into comment values (default, #{bid}, #{uid}, #{content}, #{file}, default")
 	void insertComment(Comment comment);
 	
-	@Update("update comments set content=#{content}, file=#{file} where cid=#{cid}")
+	@Update("update comment set content=#{content}, file=#{file} where cid=#{cid}")
 	void updateComment(Comment comment);
 	
-	@Delete("delete from comments where cid=#{cid}")
+	@Delete("delete from comment where cid=#{cid}")
 	void deleteComment(int cid);
 }

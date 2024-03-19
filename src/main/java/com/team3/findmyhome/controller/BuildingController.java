@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -45,66 +46,115 @@ public class BuildingController {
 	
 	
 	@GetMapping("map")
-	public String map(@RequestParam(name="f", defaultValue="bname") String field,
-			@RequestParam(name="q", defaultValue="") String query,
-			HttpSession session, Model model) {
+	public String map(HttpSession session, Model model) {
 		
-		List<Building> buildingList = bSvc.getBuildingList(field, query);
+		List<Building> buildingList = bSvc.getBuildingList("bname", "");
 		
 		for (int i = 0; i < buildingList.size(); i++)
 		{
-			String addressroad = buildingList.get(i).getAddressroad();
-			if (addressroad.contains("!"))
-			{
-				addressroad = addressroad.split("!")[0];
-			}
+			Building building = buildingList.get(i);
 			
-			Map<String, String> map = mUtil.getGeocode(buildingList.get(i).getAddressroad());
-			if (map.get("lat").equals("null") || map.get("lon").equals("null"))
+			if (building.getLat() == null || building.getLat().equals("") ||
+					building.getLon() == null || building.getLon().equals(""))
 			{
-				buildingList.remove(i);
+				String addressroad = building.getAddressroad();
+				if (addressroad.contains("!"))
+				{
+					addressroad = addressroad.split("!")[0];
+				}
+				
+				Map<String, String> map = mUtil.getGeocode(building.getAddressroad());
+				if (map.get("lat").equals("null") || map.get("lon").equals("null"))
+				{
+					bSvc.deleteBuilding(building.getBid());
+				}
+				
+				building.setLat(map.get("lat"));
+				building.setLon(map.get("lon"));
+				
+				bSvc.updateBuildingLatLon(building);
 			}
-			
-			buildingList.get(i).setLat(map.get("lat"));
-			buildingList.get(i).setLon(map.get("lon"));
 		}
 		model.addAttribute("buildingList", buildingList);
 		
 		return "map";
 	}
 	
-	@GetMapping("detail/{bid}")
-	public String detail(@PathVariable int bid, HttpSession session, Model model) {
+	@GetMapping("search")
+	public String searchList(@RequestParam(name="f", defaultValue="bname") String field,
+			@RequestParam(name="q", defaultValue="") String query,
+			HttpSession session, Model model) {
+		
+		List<Building> buildingList = bSvc.getBuildingList(field, query);
+		
+		if (buildingList.size() == 0)
+		{
+			model.addAttribute("buildingList", buildingList);
+			model.addAttribute("field", field);
+			model.addAttribute("query", query);
+			return "search";
+		}
+		
+		float avgLat = bSvc.getAvgLat(field, query);
+		float avgLon = bSvc.getAvgLon(field, query);
+		
+		model.addAttribute("buildingList", buildingList);
+		model.addAttribute("field", field);
+		model.addAttribute("query", query);
+		model.addAttribute("avgLat", avgLat);
+		model.addAttribute("avgLon", avgLon);
+		
+		return "search";
+	}
+	
+	@GetMapping(value={"detail/{bid}/{field}/{query}", "detail/{bid}/{field}/", "detail/{bid}/{field}", "detail/{bid}"})
+	public String detail(@PathVariable int bid, @PathVariable(required=false) String field,
+			@PathVariable(required=false) String query, HttpSession session, Model model) {
+		
+		if (field == null || field.equals(""))
+			field = "bname";
+		if (query == null || query.equals("null"))
+			query = "";
+		
+		List<Building> buildingList = bSvc.getBuildingList(field, query);
+		model.addAttribute("buildingList", buildingList);
 		
 		Building building = bSvc.getBuilding(bid);
 		model.addAttribute("building", building);
 		
-		List<Comment> commentList = cSvc.getCommentList(bid, "");
-		model.addAttribute("commentList", commentList);
+		float lat = bSvc.getLatBid(bid);
+		float lon = bSvc.getLonBid(bid);
+		model.addAttribute("lat", lat);
+		model.addAttribute("lon", lon);
+		
+		List<Integer> areaList = dSvc.getAreaList(bid);
+		model.addAttribute("areaList", areaList);
+		
+		//List<Comment> commentList = cSvc.getCommentList(bid, "");
+		//model.addAttribute("commentList", commentList);
 		
 		List<Reply> replyList = rSvc.getReplyList(bid);
 		model.addAttribute("replyList", replyList);
 				
-		return "building/detail";
+		return "detail";
 	}
 	
-	@GetMapping("deal/{bid}")
-	public String deal(@PathVariable int bid, HttpSession session, Model model) {
+	@GetMapping("deal/{bid}/{area}")
+	public String deal(@PathVariable int bid, @PathVariable int area, HttpSession session, Model model) {
+		
+		Building building = bSvc.getBuilding(bid);
+		model.addAttribute("building", building);
+		
 		List<Integer> areaList = dSvc.getAreaList(bid);
-		
 		if (areaList.size() == 0)
-			return "deal";
-		
-		List<DealList> dealList = new ArrayList<>();
-		
-		for (int i = 0; i < areaList.size(); i++)
-		{
-			int area = areaList.get(i);
-			List<Deal> dList = dSvc.getDealListBybidArea(bid, area);
-			dealList.add(new DealList(bid, area, dList));
+		{	
+			return "notfounddeal";
 		}
+		model.addAttribute("areaList", areaList);
 		
-		model.addAttribute("dealList", dealList);
+		List<Deal> dList = dSvc.getDealListBybidArea(bid, area);
+		
+		model.addAttribute("dList", dList);
 		
 		return "deal";
 	}

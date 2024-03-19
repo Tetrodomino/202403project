@@ -8,6 +8,6 @@ public class Main {
 
 	@GetMapping("main")
 	public String main() {
-		return "common/main";
+		return "main";
 	}
 }
