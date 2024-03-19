@@ -20,7 +20,7 @@ public interface CommentDao {
 			+ " join user u on b.uid=u.uid"
 			+ " where b.bid=#{bid} and b.content like #{query}"
 			+ " order by b.regDateTime desc")
-	List<Comment> getCommentList(int did, String query);
+	List<Comment> getCommentList(int bid, String query);
 	
 	@Insert("insert into comment values (default, #{bid}, #{uid}, #{content}, #{file}, default")
 	void insertComment(Comment comment);

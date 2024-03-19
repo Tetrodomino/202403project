@@ -3,8 +3,8 @@
 */
 // 이벤트 등록
 $(document).ready(function() {
-    $('#stateMsgBtn').click(function(e) {
-        $('#stateMsgInput').attr({'class': 'mt-2'}); // 입력창 보이게 하기
+    $('.replywrite').click(function(e) {
+        $('#replyInput').attr({'class': 'mt-2'}); // 입력창 보이게 하기
         $('#stateInput').val($('#stateMsg').text()); // 입력창에 id값이 stateMsg인 태그의 글을 넣음
     });
     $('#stateMsgSubmit').click(changeStateMsg); // 이벤트 등록

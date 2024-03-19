@@ -14,14 +14,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.team3.findmyhome.entity.Building;
 import com.team3.findmyhome.entity.Comment;
 import com.team3.findmyhome.entity.Deal;
-import com.team3.findmyhome.entity.DealList;
 import com.team3.findmyhome.entity.Reply;
 import com.team3.findmyhome.service.BuildingService;
 import com.team3.findmyhome.service.CommentService;
@@ -130,8 +128,8 @@ public class BuildingController {
 		List<Integer> areaList = dSvc.getAreaList(bid);
 		model.addAttribute("areaList", areaList);
 		
-		//List<Comment> commentList = cSvc.getCommentList(bid, "");
-		//model.addAttribute("commentList", commentList);
+		List<Comment> commentList = cSvc.getCommentList(bid, "");
+		model.addAttribute("commentList", commentList);
 		
 		List<Reply> replyList = rSvc.getReplyList(bid);
 		model.addAttribute("replyList", replyList);
@@ -161,7 +159,7 @@ public class BuildingController {
 	
 	@PostMapping("comment")
 	public String reply(int bid, String uid, String content, MultipartHttpServletRequest req,
-			HttpSession session, Model model) {
+			HttpSession session, Model model, @RequestParam Map<String, Object> paramMap) {
 		List<MultipartFile> uploadFileList = req.getFiles("files");
 
 		List<String> fileList = new ArrayList<>();
@@ -190,12 +188,12 @@ public class BuildingController {
 	}
 	
 	@PostMapping("reply")
-	public String reply(int cid, int bid, String uid, String content, HttpSession session) {
+	public String reply(int replycid, int replybid, String replyuid, String replycontent, HttpSession session) {
 		
-		Reply reply = new Reply(cid, bid, uid, content);
+		Reply reply = new Reply(replycid, replybid, replyuid, replycontent);
 		
 		rSvc.insertReply(reply);
 		
-		return "redirect:/building/detail/" + bid;
+		return "redirect:/building/detail/" + replybid;
 	}
 }

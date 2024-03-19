@@ -25,13 +25,6 @@
 		<input type="text" id="keyword" placeholder="장소를 검색하세요">
 		<button onclick="searchPlaces()">검색</button>
 
-		<div>
-			[[${aLa}]], [[${aLo}]]
-		</div>
-		<div th:each="building: ${bL}">
-			[[${building.bname}]], [[${building.location}]], [[${{building.number}}]]
-		</div>
-
 		<script src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=e74aa84fc4a7e45d6c87adbb4b574ec7&libraries=services,clusterer,drawing"></script>
 		<script th:inline="javascript"> 
 			/*<!CDATA[*/
@@ -163,13 +156,6 @@
 		<div id="map" style="width:100%;height:500px;"></div>
 		<input type="text" id="keyword" placeholder="장소를 검색하세요">
 		<button onclick="searchPlaces()">검색</button>
-
-		<div>
-			[[${La}]], [[${Lo}]]
-		</div>
-		<div th:each="building: ${bL}">
-			[[${building.bname}]], [[${building.location}]], [[${{building.number}}]]
-		</div>
 
 		<script src="http://dapi.kakao.com/v2/maps/sdk.js?appkey=e74aa84fc4a7e45d6c87adbb4b574ec7&libraries=services,clusterer,drawing"></script>
 		<script th:inline="javascript"> 

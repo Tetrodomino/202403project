@@ -31,6 +31,9 @@
             <span style="width: 10%;">
                 <button class="btn btn-outline-primary" onclick="search()">검색</button>
             </span>
+            <div th:each="building: ${buildingList}">
+                [[${building.bname}]], [[${building.location}]], [[${{building.number}}]]
+            </div>
         </div>
 
         <div class="col-8">

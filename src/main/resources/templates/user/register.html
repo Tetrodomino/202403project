@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <header th:replace="~{common/main :: head}"></header>
+	<style>
+		td { text-align: center; }
+	</style>	
+</head>
+<div th:insert="~{common/main :: top}"></div>
+<body class="bg-light">
+	<div class="container" style="margin-top: 180px; margin-bottom: 100px;">
+    <div class="row">
+      <div class="col-3"></div>
+      <div class="col-6">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title"><h3><strong>사용자 가입</strong></h3></div>
+            <hr>
+            <form action="/fmh/user/register" method="post">
+              <table class="table table-borderless">
+                <tr>
+                  <td style="width: 35%;"><label class="col-form-label">사용자 ID</label></td>
+                  <td style="width: 65%;"><input type="text" name="uid" class="form-control"></td>
+                </tr>
+                <tr>
+                  <td><label class="col-form-label">패스워드</label></td>
+                  <td><input type="password" name="pwd" class="form-control"></td>
+                </tr>
+                <tr>
+                  <td><label class="col-form-label">패스워드 확인</label></td>
+                  <td><input type="password" name="pwd2" class="form-control"></td>
+                </tr>
+                <tr>
+                  <td><label class="col-form-label">사용자 이름</label></td>
+                  <td><input type="text" name="uname" class="form-control"></td>
+                </tr>
+                <tr>
+                  <td><label class="col-form-label">이메일</label></td>
+                  <td><input type="text" name="email" class="form-control"></td>
+                </tr>
+								<tr>
+                  <td><label class="col-form-label">위치</label></td>
+                  <td><input type="text" name="location" class="form-control" placeholder="경기도 수원시 팔달구"></td>
+                </tr>
+                <tr>
+                  <td><label class="col-form-label">전화번호</label></td>
+                  <td><input type="text" name="tel" class="form-control"></td>
+                </tr>
+
+                <tr>
+                  <td colspan="2">
+                    <button class="btn btn-primary" type="submit">확인</button>
+                    <button class="btn btn-secondary" type="reset">취소</button>
+                  </td>
+                </tr>
+              </table>
+            </form>
+            <p class="mt-3">
+              <span class="me-3">이미 사용자 계정이 있으신가요?</span>
+              <a href="/fmh/user/login">로그인</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-3"></div>
+    </div>
+  </div>
+</body>
+</html>

@@ -13,21 +13,23 @@
         };   
     </script>
     <script th:inline="javascript">
-        function dealshow() {
-            var fe = ([[${field}]] == null) ? null : [[${field}]];
-            var qu = ([[${query}]] == null) ? null : [[${query}]];
-
-            var uri = '/fmh/building/detail/deal/' + [[${building.bid}]];
-            if (fe != null)
-                uri = uri + '/' + fe;
-
-            if (qu != null)
-                uri = uri + '/' + qu;
-
-            location.href = encodeURI(uri);
-        };
+        function updateComment() {
+            var commentBean = {
+                uid: $('#uid').val(),
+                content: $('#content').val(),
+                bid: $('#bid').val()
+            }
+            $.ajax({
+                url: "/building/comment2",
+                type: "POST",
+                data: commentBean
+            })
+            .done(function (fragment) {
+                $('#commentTable').replaceWith(fragment);
+            });
+        }
     </script>
-    <!--<script src="/fmh/js/aside.js?v=3"></script>-->
+    <script src="/fmh/js/reply.js?v=3"></script>
 </head>
 <body>
     <div class="row">
@@ -49,6 +51,7 @@
             </span>
             <div>
                 <table>
+
                     <tr>
                         <td>이름</td>
                         <td>[[${building.bname}]]</td>
@@ -79,6 +82,8 @@
                     </tr>
                 </table>
             </div>
+
+            <!-- 거래내역으로 넘어가는 곳 -->
             <div>
                 거래내역 보기
                 <br>
@@ -87,8 +92,61 @@
                 </span>
             </div>
     
-            <!-- 댓글 관련 -->
-            <!-- ${commentList}, ${replyList} -->
+            <div th:each="comment: ${commentList}">
+                <div class="row">
+                    <div class="col-3">
+                    </div>
+                    <div class="col-9 text-end">
+                        <span class="me-2">[[${comment.uname}]]</span>
+                        <span th:text="${#temporals.format(comment.regDateTime, 'yyyy-MM-dd HH:mm')}"></span>
+                        <br><span>[(${comment.content})]</span>
+                    </div>
+                    <div class="ms-2" th:each="reply: ${replyList}">
+                        <div th:if="${comment.cid == reply.cid}">
+                            <span class="me-2">[[${reply.uname}]]</span>
+                            <span th:text="${#temporals.format(reply.regDateTime, 'yyyy-MM-dd HH:mm')}"></span>
+                            <br><span>[(${reply.content})]</span>
+                        </div>
+                    </div>
+                    <div class="ms-2" th:if="${session.uid}" class="replywrite">
+                        <div class="mt-2 d-none" id="replyInput">
+                            <form th:if="${session.uid}" class="form-inline" action="/fmh/building/reply" method="post">
+                                <input type="hidden" name="replycid" th:value="${comment.cid}">
+                                <input type="hidden" name="replybid" th:value="${building.bid}">
+                                <input type="hidden" name="replyuid" th:value="${session.uid}">
+                                <div class="row d-flex mt-2" style="align-items: center;">
+                                    <div class="col-1">
+                                        <span>댓글</span>
+                                    </div>
+                                    <div class="col-9">
+                                        <textarea name="replycontent" rows="2" class="form-control" style="resize: none;"></textarea>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="submit" class="btn btn-primary">등록</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            <form th:if="${session.uid}" class="form-inline" action="/fmh/building/comment" method="post">
+                <input type="hidden" name="bid" th:value="${building.bid}">
+                <input type="hidden" name="uid" th:value="${session.uid}">
+                <div class="row d-flex mt-2" style="align-items: center;">
+                    <div class="col-1">
+                        <span>댓글</span>
+                    </div>
+                    <div class="col-9">
+                        <textarea name="content" rows="3" class="form-control" style="resize: none;"></textarea>
+                    </div>
+                    <div class="col-2">
+                        <button type="submit" class="btn btn-primary">등록</button>
+                    </div>
+                </div>
+
+            </form>
         </div>
 
         <div class="col-8">
