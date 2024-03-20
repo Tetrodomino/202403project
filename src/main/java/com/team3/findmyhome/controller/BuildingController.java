@@ -20,10 +20,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.team3.findmyhome.entity.Building;
 import com.team3.findmyhome.entity.Comment;
 import com.team3.findmyhome.entity.Deal;
+import com.team3.findmyhome.entity.Favorite;
 import com.team3.findmyhome.entity.Reply;
 import com.team3.findmyhome.service.BuildingService;
 import com.team3.findmyhome.service.CommentService;
 import com.team3.findmyhome.service.DealService;
+import com.team3.findmyhome.service.FavoriteService;
 import com.team3.findmyhome.service.ReplyService;
 import com.team3.findmyhome.util.JsonUtil;
 import com.team3.findmyhome.util.mapUtil;
@@ -38,6 +40,7 @@ public class BuildingController {
 	@Autowired private CommentService cSvc;
 	@Autowired private ReplyService rSvc;
 	@Autowired private DealService dSvc;
+	@Autowired private FavoriteService fSvc;
 	@Autowired private mapUtil mUtil;
 	@Autowired private JsonUtil jsonUtil;
 	@Value("${spring.servlet.multipart.location}") private String uploadDir;
@@ -75,7 +78,7 @@ public class BuildingController {
 		}
 		model.addAttribute("buildingList", buildingList);
 		
-		return "map";
+		return "search";
 	}
 	
 	@GetMapping("search")
@@ -133,6 +136,15 @@ public class BuildingController {
 		
 		List<Reply> replyList = rSvc.getReplyList(bid);
 		model.addAttribute("replyList", replyList);
+		
+		int favoriteCount = fSvc.getFavoriteCount(bid);
+		model.addAttribute("favoriteCount", favoriteCount);
+		String sessUid = (String) session.getAttribute("sessUid");
+		Favorite favorite = fSvc.getFavoriteByUid(bid, sessUid);
+		if (favorite == null)
+			session.setAttribute("favoriteCheck", 0);
+		else
+			session.setAttribute("favoriteCheck", 1);
 				
 		return "detail";
 	}
@@ -149,6 +161,7 @@ public class BuildingController {
 			return "notfounddeal";
 		}
 		model.addAttribute("areaList", areaList);
+		model.addAttribute("currentarea", area);
 		
 		List<Deal> dList = dSvc.getDealListBybidArea(bid, area);
 		
@@ -195,5 +208,25 @@ public class BuildingController {
 		rSvc.insertReply(reply);
 		
 		return "redirect:/building/detail/" + replybid;
+	}
+	
+	// 좋아요 처리
+	@GetMapping("/favorite/{bid}")
+	public String favorite(@PathVariable int bid, HttpSession session, Model model) {
+		String sessUid = (String) session.getAttribute("sessUid");
+		Favorite favorite = fSvc.getFavoriteByUid(bid, sessUid);
+		if (favorite == null)
+		{
+			fSvc.insertFavorite(new Favorite(sessUid, bid));
+			session.setAttribute("favoriteCheck", 1);
+		}
+		else
+		{
+			fSvc.deleteFavorite(favorite.getFid());
+			session.setAttribute("favoriteCheck", 0);
+		}
+		
+		model.addAttribute("favoriteCount", fSvc.getFavoriteCount(bid));
+		return "detail::#favoriteCount";
 	}
 }

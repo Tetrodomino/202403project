@@ -16,7 +16,9 @@ public interface ReplyDao {
 	@Select("select * from reply where rid=#{rid}")
 	Reply getReply(int rid);
 	
-	@Select("select * from reply where bid=#{bid} order by regDateTime desc")
+	@Select("select r.*, u.uname from reply r"
+			+ " join user u on r.uid=u.uid"
+			+ " where bid=#{bid} order by regDateTime desc")
 	List<Reply> getReplyList(int bid);
 	
 	@Insert("insert into reply values(default, #{cid}, #{bid}, #{uid}, #{content}, default)")

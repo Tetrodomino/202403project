@@ -1,28 +1,47 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <header th:replace="~{fragments/base :: head2}"></header>
+    <header th:replace="~{fragments/base :: head}"></header>
     <meta charset="utf-8">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
     <title>건물 거래내역</title>
     <script>
         function search() {
+            const field = $('#field').val();
             const query = $('#query').val();
-            const uri = '/fmh/building/search?f=' + addressroad + '&q=' + query;
+            const uri = '/fmh/building/search?f=' + field + '&q=' + query;
             location.href = encodeURI(uri);
         }   
     </script>
     <!--<script src="/fmh/js/aside.js?v=3"></script>-->
 </head>
 <body>
+    <div class="row">
+        <div class="col-12">
+            <span style="width: 20%;">
+                <select class="form-control" id="field">
+                    <option value="bname" ${field eq 'bname' ? 'selected' : ''}>이름</option>
+                    <option value="addressroad" ${field eq 'addressroad' ? 'selected' : ''}>도로명주소</option>
+                </select>
+            </span>
+            <span style="width: 70%;" th:unless="${query}">
+                <input class="form-control" type="text" id="query" placeholder="검색할 내용">
+            </span>
+            <span style="width: 70%;" th:if="${query}">
+                <input class="form-control" type="text" id="query" th:value="${query}">
+            </span>
+            <span style="width: 10%;">
+                <button class="btn btn-outline-primary" onclick="search()">검색</button>
+            </span>
+
             <div style="width: 100%">
                 <canvas id="dealChart" width="80%" height="50%">
+    
                 </canvas>
             </div>
 
             <span th:each="area: ${areaList}">
-                <button th:if="${area != currentarea}" class="btn btn-outline-primary" th:onclick="|location.href='@{|/building/deal/${building.bid}/${area}|}'|">[[${#strings.toString(T(java.lang.Math).ceil(area / 3.305)).replace('.0','')}]]평 거래내역</button>
-                <button th:if="${area == currentarea}" class="btn btn-primary">[[${#strings.toString(T(java.lang.Math).ceil(area / 3.305)).replace('.0','')}]]평 거래내역</button>
+                <button th:if="${area != currentarea}" class="btn btn-outline-primary" th:onclick="|location.href='@{|/building/deal/${building.bid}/${area}|}'|">[[${area}]]m2 로 가기</button>
             </span>
         </div>
     </div>
@@ -52,7 +71,7 @@
             data: { // 데이터가 들어갈 항목
                 labels: yeardayList, // x축 값
                 datasets: [{
-                    label: '실거래가',
+                    label: 'name',
                     data: dataList,
                     backgroundColor: ['rgba(255, 99, 132, 0.2)'],
                     borderColor: ['rgba(255, 99, 132, 1)']

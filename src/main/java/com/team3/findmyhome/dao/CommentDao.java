@@ -22,7 +22,7 @@ public interface CommentDao {
 			+ " order by b.regDateTime desc")
 	List<Comment> getCommentList(int bid, String query);
 	
-	@Insert("insert into comment values (default, #{bid}, #{uid}, #{content}, #{file}, default")
+	@Insert("insert into comment values (default, #{bid}, #{uid}, #{content}, #{file}, default)")
 	void insertComment(Comment comment);
 	
 	@Update("update comment set content=#{content}, file=#{file} where cid=#{cid}")
