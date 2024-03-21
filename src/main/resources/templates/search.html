@@ -2,6 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <header th:replace="~{fragments/base :: head2}"></header>
+    <header th:replace="~{common/main :: head}"></header>
     <meta charset="utf-8">
     <title>여러개 마커에 이벤트 등록하기1</title>
     <script>
@@ -12,33 +13,53 @@
             location.href = encodeURI(uri);
         }   
     </script>
+    <style>
+        #floating{
+            position: absolute;
+            top: 2%;
+            left: 14%;
+            text-align: center;
+            z-index: 9999;
+        }
+
+        #map {
+			  position: relative;
+        width: 100vw;
+        height: 90vh;
+			  object-fit: cover;
+			  }
+    </style>
 </head>
 <body>
-    <div class="row">
-        <div class="col-4">
-            <span style="width: 20%;">
-                <select class="form-control" id="field">
-                    <option value="bname" ${field eq 'bname' ? 'selected' : ''}>이름</option>
-                    <option value="addressroad" ${field eq 'addressroad' ? 'selected' : ''}>도로명주소</option>
-                </select>
-            </span>
-            <span style="width: 70%;" th:unless="${query}">
-                <input class="form-control" type="text" id="query" placeholder="검색할 내용">
-            </span>
-            <span style="width: 70%;" th:if="${query}">
-                <input class="form-control" type="text" id="query" th:value="${query}">
-            </span>
-            <span style="width: 10%;">
-                <button class="btn btn-outline-primary" onclick="search()">검색</button>
-            </span>
-            <div th:each="building: ${buildingList}">
-                [[${building.bname}]], [[${building.location}]], [[${{building.number}}]]
+    <div th:insert="~{common/main :: top}"></div>
+    <div id="floating">
+        <div class="card">
+            <div class="card-body" style="padding: 10px;">
+                <div class="row">
+                    <div class="col-3">
+                        <select class="form-select" id="field">
+                            <option value="bname" th:selected="${field eq 'bname'}">이름</option>
+                            <option value="addressroad" th:selected="${field eq 'addressroad'}">도로명주소</option>
+                        </select>
+                    </div>
+                    <div class="col-7">
+                        <input class="form-control" type="text" id="query" placeholder="검색할 내용" th:value="${query}" th:unless="${query}">
+                        <input class="form-control" type="text" id="query" th:value="${query}" th:if="${query}">
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-outline-primary" onclick="search()">검색</button>
+                    </div>
+                </div>
+                <div th:each="building: ${buildingList}">
+                    <!-- [[${building.bname}]], [[${building.location}]], [[${{building.number}}]] -->
+                </div>
             </div>
         </div>
+    </div>
+    
 
-        <div class="col-8">
-           <aside th:replace="~{fragments/base :: aside(bL=${buildingList}, aLa=${avgLat}, aLo=${avgLon}, f=${field}, q=${query})}"></aside> 
-        </div>
+    <div>
+    <aside th:replace="~{fragments/base :: aside(bL=${buildingList}, aLa=${avgLat}, aLo=${avgLon}, f=${field}, q=${query})}"></aside> 
     </div>
 </body>
 </html>

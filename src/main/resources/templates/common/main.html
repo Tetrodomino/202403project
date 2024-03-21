@@ -19,6 +19,7 @@
       location.href = encodeURI(uri);
     }   
     </script>
+
     <header th:fragment="head">
   
   <style>
@@ -34,11 +35,8 @@
       object-fit: cover;
     }
     .login-top {
-      position: absolute;
-      top: 0;
       left: 0;
-      right: 0;
-      padding: 20px 30px;
+      padding: 10px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -59,47 +57,64 @@
     border-radius: 15px;
     outline: none;
     padding-left: 10px;
-    }   
+    }
 
+    a { text-decoration: none; }   
+
+    .fa-grip-lines-vertical {
+      margin-left: 8px;
+    }
   </style>
   </header>
 </head>
 <body>
   
   <div class="fullscreen-image-container">
-    <img src="/fmh/img/main.jpg" class="fullscreen-image">
-    
     <div th:fragment="top">
       <header id="header">
         <div class="login-top">
-          <span style="padding-left: 30px;" class="text-white">Team3</span>
+          <a href="/fmh/main" style="padding-left: 30px;" class="text-white"><img src="/fmh/img/Team3_Logo.png" style="width: 110px; height: 70px;"></a>
          
-          <div class="mx-3">
+          <div class="mx-1">
             <span th:if="${session.sessUid}">
-              <a href="/fmh/user/logout" class="text-white" style="padding-right: 20px; text-decoration-line: none;">로그아웃</a>
+              <span class="navbar-text me-3 text-white">[[${session.sessUname}]]님 환영합니다<i class="fa-solid fa-grip-lines-vertical"></i></span>
+            </span>
+            <span th:if="${session.sessUid}">
+              <a href="/fmh/user/logout" class="text-white" style="padding-right: 15px;">로그아웃<i class="fa-solid fa-grip-lines-vertical"></i></a>
             </span>
             <span th:unless="${session.sessUid}">
-              <a href="/fmh/user/login" class="text-white" style="padding-right: 20px; text-decoration-line: none;">로그인</a>
+              <a href="/fmh/user/login" class="text-white" style="padding-right: 15px;">로그인<i class="fa-solid fa-grip-lines-vertical"></i></a>
             </span>
             <span th:unless="${session.sessUid}">
-              <a href="/fmh/user/register" class="text-white" style="padding-right: 20px; text-decoration-line: none;">회원가입</a>
+              <a href="/fmh/user/register" class="text-white" style="padding-right: 15px;">회원가입<i class="fa-solid fa-grip-lines-vertical"></i></a>
             </span>   
             <span th:if="${session.sessUid}">
-              <span class="navbar-text me-3 text-white">[[${session.sessUname}]]님 환영합니다.</span>
+              <a th:href="@{/user/mypage/{x}(x=${session.sessUid})}" class="text-white" style="padding-right: 5px;">마이페이지<i class="fa-solid fa-grip-lines-vertical"></i></a>
             </span>
             <span th:if="${session.sessUid}">
-              <a th:href="@{/user/mypage/{x}(x=${session.sessUid})}" class="text-white" style="padding-right: 5px; text-decoration-line: none;">마이페이지</a>
+              <a th:href="@{/user/update/{x}(x=${session.sessUid})}" class="text-white" style="padding-right: 5px;"><i class="fa-solid fa-user-pen"></i></a>
             </span>
           </div>
         </div>
     </header>
    </div>
+    <img src="/fmh/img/main.jpg" class="fullscreen-image">
+    
 
     <div class="search-container container-fluid">
       <input type="text" class="mainSearch" placeholder="도로명주소" id="query" style="margin-top: 100px;">
       <button type="submit" class="btn btn-primary" style="height: 47px; width: 50px;" onclick="search()"><i class="fas fa-search" style="font-size: 30px; line-height: 30px;"></i></button>
     </div>
   </div>
-  <div>copyright</div>
+
+  <footer class="footer mt-auto py-3"> <!-- Footer 추가 -->
+    <nav class="navbar navbar-expand-sm"> 
+      <div class="container-fluid justify-content-center">
+        <span class="navbar-text">
+          Copyright &copy; 2024 Team3 World Corp. All rights reserved.
+        </span>
+      </div>
+    </nav>
+  </footer>
 </body>
 </html>

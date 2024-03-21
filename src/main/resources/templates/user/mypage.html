@@ -1,51 +1,65 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>마이페이지</title>
+    <header th:replace="~{user/update :: userHead}"></header>
     <style>
-        input { padding: 3px; }
+        a { text-decoration: none; }   
     </style>
 </head>
 <body style="margin: 50px;">
 
-    <h1>회원정보</h1>
-    <table style="width: 75%">
-        <tr>
-            <td>ID</td>
-            <td>[[${user.uid}]]</td>
-        </tr>
-        <tr>
-            <td>이름</td>
-            <td>[[${user.uname}]]</td>
-        </tr>
-        <tr>
-            <td>이메일</td>
-            <td>[[${user.email}]]</td>
-        </tr>
-        <tr>
-            <td>가입일자</td>
-            <td>[[${user.regDate}]]</td>
-        </tr>
-        <tr>
-            <td>지역</td>
-            <td>[[${user.location}]]</td>
-        </tr>
-        <tr>
-            <td>전화번호</td>
-            <td>[[${user.tel}]]</td>
-        </tr>
-    </table>
-    <hr><br>
-    <h3>좋아요한 건물 목록</h3>
-    <hr>
-    <div th:each="favorite: ${favoriteList}">
-        <span style="width: 20%;">[[${favorite.bid}]]</span>
-        <span style="width: 80%;" th:onclick="|location.href='@{|/building/detail/${favorite.bid}|}'|" style="cursor: pointer;">[[${favorite.bname}]]</span>
-        <hr>
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="card-title text-center mb-4">회원 정보</h1>
+                        <table class="table table-borderless" style="width: 55%">
+                            <tr>
+                                <td>ID :</td>
+                                <td>[[${user.uid}]]</td>
+                            </tr>
+                            <tr>
+                                <td>이름 :</td>
+                                <td>[[${user.uname}]]</td>
+                            </tr>
+                            <tr>
+                                <td>이메일 :</td>
+                                <td>[[${user.email}]]</td>
+                            </tr>
+                            <tr>
+                                <td>가입일자 :</td>
+                                <td>[[${user.regDate}]]</td>
+                            </tr>
+                            <tr>
+                                <td>지역 :</td>
+                                <td>[[${user.location}]]</td>
+                            </tr>
+                            <tr>
+                                <td>전화번호 :</td>
+                                <td>[[${user.tel}]]</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+        <h3 class="mb-4" style="color: rgb(169, 168, 238);">좋아요한 건물 목록</h3>
+        <div class="row">
+            <div class="col-4">
+                <div class="list-group">
+                    <div th:each="favorite: ${favoriteList}">
+                        <a th:href="@{|/building/detail/${favorite.bid}|}" class="list-group-item" style="color: rgb(199, 154, 7);">
+                            <span style="padding-left: 30px;"><strong>[[${favorite.bname}]]</strong></span>
+                        </a>
+                    </div>
+                </div>
+                <br>
+                <button class="btn btn-outline-primary" th:onclick="|location.href='@{/user/update/{uid}(uid=${user.uid})}'|">회원 정보 수정</button>
+            </div>    
+        </div>
     </div>
-
-    <button class="btn btn-outline-primary" th:onclick="|location.href='@{|/user/update/${user.uid}|}'|">회원 정보 수정</button>
 </body>
 </html>

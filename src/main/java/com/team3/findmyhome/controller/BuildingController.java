@@ -96,6 +96,24 @@ public class BuildingController {
 			return "search";
 		}
 		
+		for (int i = 0; i < buildingList.size(); i++)
+		{
+			Building building = buildingList.get(i);
+			
+			if (building == null)
+				continue;
+			
+			int bid = building.getBid();
+			if (dSvc.getDealCount(bid) > 0)
+			{
+				building.setHasDeal(true);
+			}
+			else
+			{
+				building.setHasDeal(false);
+			}
+		}
+		
 		float avgLat = bSvc.getAvgLat(field, query);
 		float avgLon = bSvc.getAvgLon(field, query);
 		
@@ -118,6 +136,23 @@ public class BuildingController {
 			query = "";
 		
 		List<Building> buildingList = bSvc.getBuildingList(field, query);
+		for (int i = 0; i < buildingList.size(); i++)
+		{
+			Building building = buildingList.get(i);
+			
+			if (building == null)
+				continue;
+			
+			int bid2 = building.getBid();
+			if (dSvc.getDealCount(bid2) > 0)
+			{
+				building.setHasDeal(true);
+			}
+			else
+			{
+				building.setHasDeal(false);
+			}
+		}
 		model.addAttribute("buildingList", buildingList);
 		
 		Building building = bSvc.getBuilding(bid);

@@ -22,7 +22,7 @@
                     $(this).siblings('.replywrite').children().attr({'class': 'mt-2'}); // 입력창 보이게 하기
                 }
             );
-        });  
+        });
     </script>
     <script th:inline="javascript">
         function favoriteClick(bid) {
@@ -59,152 +59,165 @@
             });
         }
     </script>
+    <style>
+        .table_title {
+            border-right-style: solid;
+        }
+    </style>
 </head>
 <body>
-    <div th:insert="~{common/main :: top}"></div>
-    <div class="row">
-        <div class="col-4">
-            <!-- <span style="width: 20%;">
-                <select class="form-control" id="field">
-                    <option value="bname" ${field eq 'bname' ? 'selected' : ''}>이름</option>
-                    <option value="addressroad" ${field eq 'addressroad' ? 'selected' : ''}>도로명주소</option>
-                </select>
-            </span>
-             <span style="width: 70%;" th:unless="${query}">
-                <input class="form-control" type="text" id="query" placeholder="검색할 내용">
-            </span>
-            <span style="width: 70%;" th:if="${query}">
-                <input class="form-control" type="text" id="query" th:value="${query}">
-            </span>
-            <span style="width: 10%;">
-                <button class="btn btn-outline-primary" onclick="search()">검색</button>
-            </span> -->
-            <div>
-               <div style="font-size: 24px;">
-                   <a href="#" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></a>
+<div th:insert="~{common/main :: top}"></div>
+<div class="row mx-0">
+    <div class="col-4 bg-secondary bg-opacity-25" style="overflow-y:scroll; height: 800px;">
+        <!-- <span style="width: 20%;">
+            <select class="form-control" id="field">
+                <option value="bname" ${field eq 'bname' ? 'selected' : ''}>이름</option>
+                <option value="addressroad" ${field eq 'addressroad' ? 'selected' : ''}>도로명주소</option>
+            </select>
+        </span>
+         <span style="width: 70%;" th:unless="${query}">
+            <input class="form-control" type="text" id="query" placeholder="검색할 내용">
+        </span>
+        <span style="width: 70%;" th:if="${query}">
+            <input class="form-control" type="text" id="query" th:value="${query}">
+        </span>
+        <span style="width: 10%;">
+            <button class="btn btn-outline-primary" onclick="search()">검색</button>
+        </span> -->
+
+        <div class="margin-top">
+            <div class="card mt-1 shadow">
+                <div class="card-header" style="font-size: 24px;">
+                    <a href="#" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i></a>
                     <span style="padding-left: 45px;">[[${building.bname}]]</span>
                 </div>
-                <table>
+                <table class="table card-body mb-0">
                     <tr>
-                        <td>지역</td>
+                        <td class="table_title" style="border-right-style: solid;">지역</td>
                         <td>[[${building.location}]]</td>
                     </tr>
                     <tr>
-                        <td>유형</td>
+                        <td class="table_title">유형</td>
                         <td>[[${building.btype}]]</td>
                     </tr>
                     <tr>
-                        <td>지번주소</td>
+                        <td class="table_title">지번주소</td>
                         <td>[[${building.address}]]</td>
                     </tr>
                     <tr>
-                        <td>도로명주소</td>
+                        <td class="table_title">도로명주소</td>
                         <td>[[${building.addressroad}]]</td>
                     </tr>
                     <tr>
-                        <td>우편번호</td>
+                        <td class="table_title">우편번호</td>
                         <td>[[${building.number}]]</td>
                     </tr>
                     <tr>
-                        <td>승인날짜</td>
+                        <td class="table_title">승인날짜</td>
                         <td>[[${building.approve}]]</td>
                     </tr>
                 </table>
             </div>
+        </div>
 
-            <!-- 거래내역으로 넘어가는 곳 -->
-            <div>
+        <!-- 거래내역으로 넘어가는 곳 -->
+        <div class="card my-1 shadow">
                 <span th:if="${building.bid != null and not #lists.isEmpty(areaList)}">
-                    <p>거래내역 보기</p>
                     <br>
-                    <iframe th:src="@{'/building/deal/' + ${building.bid} + '/' + ${areaList[0]}}" width="100%" height="350"></iframe>
+                    <iframe th:src="@{'/building/deal/' + ${building.bid} + '/' + ${areaList[0]}}" width="100%"
+                            height="350"></iframe>
                     <!-- <button class="btn btn-outline-primary" th:onclick="|location.href='@{|/building/deal/${building.bid}/${area}|}'|">[[${area}]]m2 거래내역</button> -->
                 </span>
-                <span th:unless="${building.bid != null and not #lists.isEmpty(areaList)}">
-                    <p>매매 내역이 없는 건물입니다.</p>
+            <span th:unless="${building.bid != null and not #lists.isEmpty(areaList)}">
+                    <h4><p class="text-center align-middle mt-3">매매 내역이 없는 건물입니다.</p></h4>
                 </span>
-            </div>
-
-            <hr>
-            <!-- 좋아요 -->
-            <div id="buildingfavorite">
-                <span th:if="${session.sessUid}">
-                    <a th:onclick="favoriteClick([[${building.bid}]])" style="cursor: pointer;">
-                        <span th:if="${session.favoriteCheck == 1}"><i id="ficon" class="fa-solid fa-star"></i></span>
-                        <span th:if="${session.favoriteCheck == 0}"><i id="ficon" class="fa-regular fa-star"></i></span>
-                        <span id="favoriteCount" th:text="${favoriteCount}"></span>
-                    </a>
-                </span>
-                <span th:unless="${session.sessUid}">
-                    <a>
-                        <i id="ficon" class="fa-regular fa-star"></i>
-                        [[${favoriteCount}]]
-                    </a>
-                </span>
-            </div>
-
-            <hr>
-             <!-- 댓글-->
-             <div id="commentDiv">
-                <div th:each="comment: ${commentList}">
-                    <div class="row">
-                        <div class="col-3">
-                        </div>
-                        <div class="col-9 text-end replyclick">
-                            <span class="me-2" th:onclick="|location.href='@{|/user/detail/${comment.uid}|}'|" style="cursor: pointer;">[[${comment.uname}]]</span>
-                            <span th:text="${#temporals.format(comment.regDateTime, 'yyyy-MM-dd HH:mm')}"></span>
-                            <br><span>[(${comment.content})]</span>
-                        </div>
-                        <div class="ms-2" th:each="reply: ${replyList}">
-                            <div th:if="${comment.cid == reply.cid}">
-                                <span class="me-2" th:onclick="|location.href='@{|/user/detail/${reply.uid}|}'|" style="cursor: pointer;">[[${reply.uname}]]</span>
-                                <span th:text="${#temporals.format(reply.regDateTime, 'yyyy-MM-dd HH:mm')}"></span>
-                                <br><span>[(${reply.content})]</span>
-                            </div>
-                        </div>
-                        <div class="ms-2 replywrite" th:if="${session.sessUid}">
-                            <div class="mt-2 d-none" id="replyInput">
-                                <form th:if="${session.sessUid}" class="form-inline" action="/fmh/building/reply" method="post">
-                                    <input type="hidden" name="replycid" th:value="${comment.cid}">
-                                    <input type="hidden" name="replybid" th:value="${building.bid}">
-                                    <input type="hidden" name="replyuid" th:value="${session.sessUid}">
-                                    <div class="row d-flex mt-2" style="align-items: center;">
-                                        <div class="col-1">
-                                            <span>댓글</span>
-                                        </div>
-                                        <div class="col-9">
-                                            <textarea name="replycontent" rows="2" class="form-control" style="resize: none;"></textarea>
-                                        </div>
-                                        <div class="col-2">
-                                            <button type="submit" class="btn btn-primary">등록</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                </div>
-            </div>
-            <form th:if="${session.sessUid != null}" class="form-inline" action="/fmh/building/comment" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="bid" th:value="${building.bid}">
-                <input type="hidden" name="uid" th:value="${session.sessUid}">
-                <div class="row d-flex mt-2" style="align-items: center;">
-                    <div class="col-1">
-                        <span>댓글</span>
-                    </div>
-                    <div class="col-9">
-                        <textarea name="content" rows="3" class="form-control" style="resize: none;"></textarea>
-                    </div>
-                    <div class="col-2">
-                        <button type="submit" class="btn btn-primary">등록</button>
-                    </div>
-                </div>
-            </form>
         </div>
-        <div class="col-8">
-           <aside th:replace="~{fragments/base :: aside2(bL=${buildingList}, build=${building}, La=${lat}, Lo=${lon}, f=${field}, q=${query})}"></aside> 
+        <div class="card">
+            <!-- 좋아요 -->
+            <div class="card-body shadow">
+                <div id="buildingfavorite">
+                        <span th:if="${session.sessUid}">
+                            <a th:onclick="favoriteClick([[${building.bid}]])" style="cursor: pointer;">
+                                <span th:if="${session.favoriteCheck == 1}"><i id="ficon" class="fa-solid fa-star"></i></span>
+                                <span th:if="${session.favoriteCheck == 0}"><i id="ficon" class="fa-regular fa-star"></i></span>
+                                <span id="favoriteCount" th:text="${favoriteCount}"></span>
+                            </a>
+                        </span>
+                    <span th:unless="${session.sessUid}">
+                            <a>
+                                <i id="ficon" class="fa-regular fa-star"></i>
+                                [[${favoriteCount}]]
+                            </a>
+                        </span>
+                </div>
+                <!-- 댓글-->
+                <div id="commentDiv">
+                    <div th:each="comment: ${commentList}">
+                        <div class="row">
+                            <div class="col-2"></div>
+                            <div class="mb-2 col-10 text-end replyclick">
+                                <span class="me-2" th:onclick="|location.href='@{|/user/detail/${comment.uid}|}'|"
+                                      style="cursor: pointer;">[[${comment.uname}]]</span>
+                                <span th:text="${#temporals.format(comment.regDateTime, 'yyyy-MM-dd HH:mm')}"></span>
+                                <br><span>[(${comment.content})]</span>
+                            </div>
+                            <div class="ms-2" th:each="reply: ${replyList}">
+                                <div class="table" th:if="${comment.cid == reply.cid}">
+                                    <span class="me-2" th:onclick="|location.href='@{|/user/detail/${reply.uid}|}'|"
+                                          style="cursor: pointer;">[[${reply.uname}]]</span>
+                                    <span th:text="${#temporals.format(reply.regDateTime, 'yyyy-MM-dd HH:mm')}"></span>
+                                    <br><span>[(${reply.content})]</span>
+                                </div><hr>
+                            </div>
+                            <div class="replywrite" th:if="${session.sessUid}">
+                                <div class="mt-2 d-none" id="replyInput">
+                                    <form th:if="${session.sessUid}" class="form-inline" action="/fmh/building/reply"
+                                          method="post">
+                                        <input type="hidden" name="replycid" th:value="${comment.cid}">
+                                        <input type="hidden" name="replybid" th:value="${building.bid}">
+                                        <input type="hidden" name="replyuid" th:value="${session.sessUid}">
+                                        <div class="row d-flex mt-2" style="align-items: center;">
+                                            <div class="col-2 px-1 text-center">
+                                                <span>댓글</span>
+                                            </div>
+                                            <div class="col-7">
+                                                <textarea name="replycontent" rows="2" class="form-control"
+                                                          style="resize: none;"></textarea>
+                                            </div>
+                                            <div class="col-3">
+                                                <button type="submit" class="btn btn-primary">등록</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+
+                <form th:if="${session.sessUid != null}" class="form-inline" action="/fmh/building/comment" method="post"
+                      enctype="multipart/form-data">
+                    <input type="hidden" name="bid" th:value="${building.bid}">
+                    <input type="hidden" name="uid" th:value="${session.sessUid}">
+                    <div class="row d-flex mt-2" style="align-items: center;">
+                        <div class="col-2 px-1 text-center">
+                            <span>댓글</span>
+                        </div>
+                        <div class="col-7">
+                            <textarea name="content" rows="2" class="form-control" style="resize: none;"></textarea>
+                        </div>
+                        <div class="col-3">
+                            <button type="submit" class="btn btn-primary">등록</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+    <div class="col-8 px-0">
+        <aside th:replace="~{fragments/base :: aside2(bL=${buildingList}, build=${building}, La=${lat}, Lo=${lon}, f=${field}, q=${query})}"></aside>
+    </div>
+</div>
 </body>
 </html>

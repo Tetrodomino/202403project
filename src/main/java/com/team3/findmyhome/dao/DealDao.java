@@ -26,4 +26,9 @@ public interface DealDao {
 			+ " where bid=#{bid} and truncate(area, 0)=#{area}"
 			+ " order by checkYear, checkDay")
 	List<Deal> getDealListBybidArea(int bid, int area);
+	
+	@Select("select count(d.did) from deal d"
+			+ " join building b on d.bid=b.bid"
+			+ " where b.bid=#{bid}")
+	int getDealCount(int bid);
 }

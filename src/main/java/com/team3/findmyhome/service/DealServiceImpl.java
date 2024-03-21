@@ -37,4 +37,9 @@ public class DealServiceImpl implements DealService {
 	public List<Deal> getDealListBybidArea(int bid, int area) {
 		return dDao.getDealListBybidArea(bid, area);
 	}
+
+	@Override
+	public int getDealCount(int bid) {
+		return dDao.getDealCount(bid);
+	}
 }

@@ -10,26 +10,25 @@
             const query = $('#query').val();
             const uri = '/fmh/building/search?f=' + addressroad + '&q=' + query;
             location.href = encodeURI(uri);
-        }   
+        }
     </script>
     <!--<script src="/fmh/js/aside.js?v=3"></script>-->
 </head>
-<body>
+<body class="mx-1 px-1">
             <div style="width: 100%">
-                <canvas id="dealChart" width="80%" height="50%">
+                <canvas class="mb-3" id="dealChart" width="80%" height="50%">
                 </canvas>
             </div>
-
-            <span th:each="area: ${areaList}">
-                <button th:if="${area != currentarea}" class="btn btn-outline-primary" th:onclick="|location.href='@{|/building/deal/${building.bid}/${area}|}'|">[[${#strings.toString(T(java.lang.Math).ceil(area / 3.305)).replace('.0','')}]]평 거래내역</button>
-                <button th:if="${area == currentarea}" class="btn btn-primary">[[${#strings.toString(T(java.lang.Math).ceil(area / 3.305)).replace('.0','')}]]평 거래내역</button>
-            </span>
-        </div>
-    </div>
+            <div style="margin-left: 60px;">
+                <span th:each="area: ${areaList}">
+                    <button th:if="${area != currentarea}" class="btn btn-outline-primary" th:onclick="|location.href='@{|/building/deal/${building.bid}/${area}|}'|">[[${#strings.toString(T(java.lang.Math).ceil(area / 3.305)).replace('.0','')}]]평 거래내역</button>
+                    <button th:if="${area == currentarea}" class="btn btn-primary">[[${#strings.toString(T(java.lang.Math).ceil(area / 3.305)).replace('.0','')}]]평 거래내역</button>
+                </span>
+            </div>
 
     <script th:inline="javascript">
         var ctx = document.getElementById('dealChart').getContext('2d'); // <canvas> id = "dealChart" 에 2d 타입의 차트 생성
-        
+
         var yeardayList = [];
         var dataList = [];
 
@@ -46,25 +45,20 @@
             }
             dataList.push(deal.money);
         });
-        
+
         var dealChart = new Chart(ctx, {
             type: 'line', // 차트 표시타입
             data: { // 데이터가 들어갈 항목
                 labels: yeardayList, // x축 값
                 datasets: [{
-                    label: '실거래가',
+                    label: '실거래가 (단위:만 원)',
                     data: dataList,
                     backgroundColor: ['rgba(255, 99, 132, 0.2)'],
                     borderColor: ['rgba(255, 99, 132, 1)']
                 }] // y축 값
             },
             options: { // 차트 부가 옵션
-                responsive: true, // 차트가 반응형으로 동작하도록 설정
-                scales: {
-                    y: {
-                        beginAtZero: true // 차트의 y축이 0부터 시작
-                    }
-                }
+                responsive: true // 차트가 반응형으로 동작하도록 설정
             }
         });
 

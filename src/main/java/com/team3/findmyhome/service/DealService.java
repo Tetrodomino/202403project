@@ -15,4 +15,6 @@ public interface DealService {
 	List<Integer> getAreaList(int bid);
 	
 	List<Deal> getDealListBybidArea(int bid, int area);
+	
+	int getDealCount(int bid);
 }

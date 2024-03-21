@@ -14,6 +14,8 @@ public class Building {
 	private String lat;
 	private String lon;
 	
+	private boolean hasDeal;
+	
 	public Building() {
 	}
 
@@ -41,6 +43,22 @@ public class Building {
 		this.approve = approve;
 		this.lat = lat;
 		this.lon = lon;
+	}
+
+	public Building(int bid, String location, String bname, String btype, String address, String addressroad,
+			String number, String approve, String lat, String lon, boolean hasDeal) {
+		super();
+		this.bid = bid;
+		this.location = location;
+		this.bname = bname;
+		this.btype = btype;
+		this.address = address;
+		this.addressroad = addressroad;
+		this.number = number;
+		this.approve = approve;
+		this.lat = lat;
+		this.lon = lon;
+		this.hasDeal = hasDeal;
 	}
 
 	@Override
@@ -128,6 +146,14 @@ public class Building {
 
 	public void setLon(String lon) {
 		this.lon = lon;
+	}
+
+	public boolean isHasDeal() {
+		return hasDeal;
+	}
+
+	public void setHasDeal(boolean hasDeal) {
+		this.hasDeal = hasDeal;
 	}
 	
 }

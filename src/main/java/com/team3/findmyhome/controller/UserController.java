@@ -112,6 +112,7 @@ public class UserController {
 	@GetMapping("/update/{uid}")
 	public String update(@PathVariable String uid, Model model) {
 		User user = uSvc.getUserByUid(uid);
+		
 		model.addAttribute("user", user);
 	
 		return "user/update";
@@ -132,7 +133,9 @@ public class UserController {
 			hashedPwd = BCrypt.hashpw(pwd, BCrypt.gensalt());
 		}
 		User user = new User(uid, hashedPwd, uname, email, location, tel);
-		System.out.println(user);
+		session.setAttribute("sessUname", user.getUname());
+		session.setAttribute("email", user.getEmail());
+		session.setAttribute("location", user.getLocation());
 		uSvc.updateUser(user);
 		return "redirect:/main";
 	}
